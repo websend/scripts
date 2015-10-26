@@ -4,11 +4,11 @@ random_string () {
   echo `cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z0-9' | tr '[:upper:]' '[:lower:]' | fold -w 4 | head -n 1`
 }
 
-error() {
+error () {
   echo -e "$vtab$bold$red$reverse""Oops, something went wrong.$reset\n$1$vtab"
 }
 
-cleanup() {
+cleanup () {
   echo -e "$vtab$bold$yellow$reverse""Invoking cleanup.$reset$vtab"
 
   docker rm -f -v ${all_containers[@]}
@@ -18,8 +18,12 @@ print_banner () {
   echo -e "$vtab$bold$1$reverse=============== $2 ===============$reset$vtab"
 }
 
-print_done() {
-  echo -e "$green""done$reset$1"
+print_start () {
+  echo -e "$yellow$bold===>$reset""$bold$1$reset\c"
+}
+
+print_done () {
+  echo -e "$green$bold""done$reset$1"
 }
 
 # $1: data container name

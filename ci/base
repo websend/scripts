@@ -19,7 +19,7 @@ print_banner () {
 }
 
 print_start () {
-  echo -e "$yellow$bold===>$reset""$bold$1$reset\c"
+  echo -e "$yellow$bold===>$reset""$bold$1$reset"
 }
 
 print_done () {
@@ -73,11 +73,11 @@ start_redis_container () {
   sleep 5
   print_done
 
-  echo -e "Reading redis container host $container_name...\c"
+  print_start "Reading redis container host $container_name...\c"
   redis_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
   print_done
 
-  echo -e "Reading redis container port $container_name...\c"
+  print_start "Reading redis container port $container_name...\c"
   redis_port=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "6379/tcp") 0).HostPort }}' "$container_name")
   print_done
 }
@@ -106,11 +106,11 @@ start_mysql_container () {
   sleep 10
   print_done
 
-  echo -e "Reading mysql container host...\c"
+  print_start "Reading mysql container host...\c"
   mysql_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
   print_done
 
-  echo -e "Reading mysql container port...\c"
+  print_start "Reading mysql container port...\c"
   mysql_port=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort }}' "$container_name")
   print_done
 }
@@ -133,11 +133,11 @@ start_rabbitmq_container () {
   sleep 5
   print_done
 
-  echo -e "Reading rabbitmq container host...\c"
+  print_start "Reading rabbitmq container host...\c"
   rabbitmq_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
   print_done
 
-  echo -e "Reading rabbitmq container port...\c"
+  print_start "Reading rabbitmq container port...\c"
   rabbitmq_port=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "5672/tcp") 0).HostPort }}' "$container_name")
   print_done
 }

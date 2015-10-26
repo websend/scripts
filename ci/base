@@ -31,7 +31,7 @@ print_done () {
 # $3: data user id
 # $4: data group id
 start_data_container () {
-  echo -e "Starting data container $1...\c"
+  print_start "Starting data container $1..."
 
   set -e
   local data_container_name="$1"
@@ -60,7 +60,7 @@ start_redis_container () {
 
   start_data_container "$data_container_name" "/home/redis/data" "6379" "6379"
 
-  echo -e "Starting redis container $container_name...\c"
+  print_start "Starting redis container $1..."
   docker run \
   --name "$container_name" \
   -d \
@@ -94,7 +94,7 @@ start_mysql_container () {
 
   start_data_container "$data_container_name" "/home/mysql/data" "3306" "3306"
 
-  echo -e "Starting mysql container $container_name...\c"
+  print_start "Starting mysql container $1..."
   docker run \
   --name "$container_name" \
   -d \
@@ -119,11 +119,10 @@ start_mysql_container () {
 # $2: data container name
 start_rabbitmq_container () {
   set -e
-
   local container_name="$1"
   local data_container_name="$2"
 
-  echo -e "Starting rabbitmq container $container_name...\c"
+  print_start "Starting rabbitmq container $1..."
   docker run \
   --name "$container_name" \
   -d \

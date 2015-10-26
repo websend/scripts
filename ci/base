@@ -1,0 +1,140 @@
+#!/bin/bash
+
+random_string () {
+  echo `cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z0-9' | tr '[:upper:]' '[:lower:]' | fold -w 4 | head -n 1`
+}
+
+error() {
+  echo -e "$vtab$bold$red$reverse""Oops, something went wrong.$reset\n$1$vtab"
+}
+
+cleanup() {
+  echo -e "$vtab$bold$yellow$reverse""Invoking cleanup.$reset$vtab"
+
+  docker rm -f -v ${all_containers[@]}
+}
+
+print_banner () {
+  echo -e "$vtab$bold$1$reverse=============== $2 ===============$reset$vtab"
+}
+
+print_done() {
+  echo -e "$green""done$reset$1"
+}
+
+# $1: data container name
+# $2: data directory
+# $3: data user id
+# $4: data group id
+start_data_container () {
+  echo -e "Starting data container $1...\c"
+
+  set -e
+  local data_container_name="$1"
+  local data_directory="$2"
+  local data_user_id="$3"
+  local data_group_id="$4"
+
+  docker run \
+  --name "$data_container_name" \
+  -e "DATA_DIRECTORY=$data_directory" \
+  -e "USER_ID=$data_user_id" \
+  -e "GROUP_ID=$data_group_id" \
+  -v "$data_directory" \
+  "$data_image_name":"$data_image_tag"
+
+  print_done
+}
+
+
+# $1: container name
+# $2: data container name
+start_redis_container () {
+  set -e
+  local container_name="$1"
+  local data_container_name="$2"
+
+  start_data_container "$data_container_name" "/home/redis/data" "6379" "6379"
+
+  echo -e "Starting redis container $container_name...\c"
+  docker run \
+  --name "$container_name" \
+  -d \
+  -e "DATA_DIRECTORY=/home/redis/data" \
+  --volumes-from "$data_container_name" \
+  -p :6379 \
+  -p :6379/udp \
+  "$redis_image_name":"$redis_image_tag" &
+
+  sleep 5
+  print_done
+
+  echo -e "Reading redis container host $container_name...\c"
+  redis_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  print_done
+
+  echo -e "Reading redis container port $container_name...\c"
+  redis_port=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "6379/tcp") 0).HostPort }}' "$container_name")
+  print_done
+}
+
+# $1: container name
+# $2: data container name
+start_mysql_container () {
+  set -e
+  local container_name="$1"
+  local data_container_name="$2"
+
+  mysql_user_name="root"
+  mysql_password=""
+
+  start_data_container "$data_container_name" "/home/mysql/data" "3306" "3306"
+
+  echo -e "Starting mysql container $container_name...\c"
+  docker run \
+  --name "$container_name" \
+  -d \
+  -e "DATA_DIRECTORY=/home/mysql/data" \
+  --volumes-from "$data_container_name" \
+  -p :3306 \
+  "$mysql_image_name":"$mysql_image_tag" &
+
+  sleep 10
+  print_done
+
+  echo -e "Reading mysql container host...\c"
+  mysql_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  print_done
+
+  echo -e "Reading mysql container port...\c"
+  mysql_port=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort }}' "$container_name")
+  print_done
+}
+
+# $1: container name
+# $2: data container name
+start_rabbitmq_container () {
+  set -e
+
+  local container_name="$1"
+  local data_container_name="$2"
+
+  echo -e "Starting rabbitmq container $container_name...\c"
+  docker run \
+  --name "$container_name" \
+  -d \
+  -p :5672 \
+  -p :15672 \
+  "$rabbitmq_image_name":"$rabbitmq_image_tag" &
+
+  sleep 5
+  print_done
+
+  echo -e "Reading rabbitmq container host...\c"
+  rabbitmq_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  print_done
+
+  echo -e "Reading rabbitmq container port...\c"
+  rabbitmq_port=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "5672/tcp") 0).HostPort }}' "$container_name")
+  print_done
+}

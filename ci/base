@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# Colors & markup
+
+red='\033[0;31m'
+yellow='\033[0;33m'
+green='\033[0;32m'
+reset='\033[00m'
+bold='\033[01m'
+reverse='\033[07m'
+
+vtab='\n\n\n'
+
+
+# Functions
+
 random_string () {
   echo `cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z0-9' | tr '[:upper:]' '[:lower:]' | fold -w 4 | head -n 1`
 }

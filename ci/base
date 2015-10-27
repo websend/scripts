@@ -162,6 +162,6 @@ start_memcached_container () {
   print_done
 
   print_start "Reading memcached container $container_name port...\c"
-  memcached_port=11211 #$(docker inspect --format '{{(index (index .NetworkSettings.Ports "11211/tcp") 0).HostPort }}' "$container_name")
+  memcached_port=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "11211/tcp") 0).HostPort }}' "$container_name")
   print_done
 }

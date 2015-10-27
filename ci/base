@@ -5,17 +5,17 @@ random_string () {
 }
 
 error () {
-  echo -e "$vtab$bold$red$reverse""Oops, something went wrong.$reset\n$1$vtab"
+  echo -e "$vtab$red$bold$reverse""Oops, something went wrong.$reset\n$1$vtab"
 }
 
 cleanup () {
-  echo -e "$vtab$bold$yellow$reverse""Invoking cleanup.$reset$vtab"
+  echo -e "$vtab$yellow$bold$reverse""Invoking cleanup.$reset$vtab"
 
   docker rm -f -v ${all_containers[@]}
 }
 
 print_banner () {
-  echo -e "$vtab$bold$1$reverse=============== $2 ===============$reset$vtab"
+  echo -e "$vtab$1$bold$reverse=============== $2 ===============$reset$vtab"
 }
 
 print_start () {

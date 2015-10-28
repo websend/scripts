@@ -8,6 +8,7 @@ green='\033[0;32m'
 reset='\033[00m'
 bold='\033[01m'
 reverse='\033[07m'
+cyan='\033[36m'
 
 vtab='\n\n\n'
 
@@ -35,6 +36,10 @@ cleanup () {
 
 print_banner () {
   echo -e "$vtab$1$bold$reverse=============== $2 ===============$reset$vtab"
+}
+
+print_small_banner () {
+  echo -e "$1$bold$reverse=============== $2 ===============$reset"
 }
 
 print_start () {

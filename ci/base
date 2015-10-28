@@ -24,8 +24,8 @@ error () {
 }
 
 cleanup () {
-  echo -e "$yellow$bold$reverse""Invoking cleanup...$reset"
-
+  print_start "Invoking cleanup..."
+  
   # Make sure we always return success, even if the command fails.
   # Needed to get around this docker bug:
   # Cannot destroy container container_name: Driver overlay failed to remove

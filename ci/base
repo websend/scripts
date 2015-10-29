@@ -25,13 +25,21 @@ error () {
 
 cleanup () {
   print_start "Invoking cleanup..."
-  
+
   # Make sure we always return success, even if the command fails.
   # Needed to get around this docker bug:
   # Cannot destroy container container_name: Driver overlay failed to remove
   # init filesystem, see https://github.com/docker/docker/issues/14474
   # Happens on docker 1.8.3 linux 4.2.2
-  docker rm -f -v ${all_containers[@]} || true
+
+  for container_name in ${all_containers[@]}
+  do
+    docker stop "$container_name" || true
+    docker kill "$container_name" || true
+    docker rm -v "$container_name" || true
+  done
+
+  # docker rm -f -v ${all_containers[@]} || true
   print_done
 }
 

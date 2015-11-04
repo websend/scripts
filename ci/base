@@ -30,13 +30,16 @@ cleanup () {
   # Needed to get around this docker bug:
   # Cannot destroy container container_name: Driver overlay failed to remove
   # init filesystem, see https://github.com/docker/docker/issues/14474
+  # and https://github.com/docker/docker/issues/17661
   # Happens on docker 1.8.3 linux 4.2.2
 
   for container_name in ${all_containers[@]}
   do
     docker stop "$container_name" || true
+    sleep 0.1
     docker kill "$container_name" || true
-    docker rm -v "$container_name" || true
+    sleep 0.1
+    docker rm -f -v "$container_name" || true
   done
 
   # docker rm -f -v ${all_containers[@]} || true

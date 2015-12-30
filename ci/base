@@ -9,7 +9,6 @@ reset='\033[00m'
 bold='\033[01m'
 reverse='\033[07m'
 cyan='\033[36m'
-
 vtab='\n\n\n'
 
 
@@ -44,6 +43,11 @@ cleanup () {
 
   # docker rm -f -v ${all_containers[@]} || true
   print_done
+}
+
+cleanup_after_error () {
+  error
+  cleanup
 }
 
 print_banner () {

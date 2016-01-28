@@ -36,8 +36,8 @@ cleanup () {
   do
     docker stop "$container_name" || true
     sleep 0.1
-    docker kill "$container_name" || true
-    sleep 0.1
+    #docker kill "$container_name" || true
+    #sleep 0.1
     docker rm -f -v "$container_name" || true
   done
 

@@ -171,7 +171,7 @@ start_mysql_in_memory_container () {
   --name "$container_name" \
   -d \
   -e "DATA_DIRECTORY=/home/mysql/data" \
-  --tmpfs=/home/mysql/data:rw,noexec,uid=3306,gid=3306,size=1G
+  --tmpfs=/home/mysql/data:rw,noexec,uid=3306,gid=3306,size=1G \
   -p :3306 \
   "$mysql_image_name":"$mysql_image_tag" &
 
@@ -238,6 +238,6 @@ start_memcached_container () {
   print_done
 }
 
-get_free_port () {
-  (netstat  -atn | awk '{printf "%s\n%s\n", $4, $4}' | grep -oE '[0-9]*$'; seq 32768 61000) | sort -n | uniq -u | head -n 1
-}
+# get_free_port () {
+#   (netstat  -atn | awk '{printf "%s\n%s\n", $4, $4}' | grep -oE '[0-9]*$'; seq 32768 61000) | sort -n | uniq -u | head -n 1
+# }

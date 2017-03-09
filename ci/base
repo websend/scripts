@@ -237,7 +237,3 @@ start_memcached_container () {
   memcached_port=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "11211/tcp") 0).HostPort }}' "$container_name")
   print_done
 }
-
-# get_free_port () {
-#   (netstat  -atn | awk '{printf "%s\n%s\n", $4, $4}' | grep -oE '[0-9]*$'; seq 32768 61000) | sort -n | uniq -u | head -n 1
-# }

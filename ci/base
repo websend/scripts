@@ -156,6 +156,38 @@ start_mysql_container () {
 }
 
 # $1: container name
+# $2: data container name
+start_mysql_in_memory_container () {
+  set -e
+  local container_name="$1"
+  local data_container_name="$2"
+
+  mysql_user_name="root"
+  mysql_password=""
+
+  print_start "Starting mysql in memory container $1..."
+
+  docker run \
+  --name "$container_name" \
+  -d \
+  -e "DATA_DIRECTORY=/home/mysql/data" \
+  --tmpfs=/home/mysql/data:rw,noexec,uid=3306,gid=3306,size=1G
+  -p :3306 \
+  "$mysql_image_name":"$mysql_image_tag" &
+
+  sleep 10
+  print_done
+
+  print_start "Reading mysql container $container_name host...\c"
+  mysql_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  print_done
+
+  print_start "Reading mysql container $container_name port...\c"
+  mysql_port=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort }}' "$container_name")
+  print_done
+}
+
+# $1: container name
 start_rabbitmq_container () {
   set -e
   local container_name="$1"

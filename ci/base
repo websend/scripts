@@ -114,7 +114,7 @@ start_redis_container () {
   print_done
 
   print_start "Reading redis container $container_name host...\c"
-  redis_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  redis_host=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$container_name")
   print_done
 
   print_start "Reading redis container $container_name port...\c"
@@ -147,7 +147,7 @@ start_mysql_container () {
   print_done
 
   print_start "Reading mysql container $container_name host...\c"
-  mysql_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  mysql_host=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$container_name")
   print_done
 
   print_start "Reading mysql container $container_name port...\c"
@@ -179,7 +179,7 @@ start_mysql_in_memory_container () {
   print_done
 
   print_start "Reading mysql container $container_name host...\c"
-  mysql_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  mysql_host=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$container_name")
   print_done
 
   print_start "Reading mysql container $container_name port...\c"
@@ -205,7 +205,7 @@ start_rabbitmq_container () {
   print_done
 
   print_start "Reading rabbitmq container $container_name host...\c"
-  rabbitmq_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  rabbitmq_host=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$container_name")
   print_done
 
   print_start "Reading rabbitmq container $container_name port...\c"
@@ -230,7 +230,7 @@ start_memcached_container () {
   print_done
 
   print_start "Reading memcached container $container_name host...\c"
-  memcached_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  memcached_host=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$container_name")
   print_done
 
   print_start "Reading memcached container $container_name port...\c"
@@ -254,7 +254,7 @@ start_firefox_standalone_container () {
   print_done
 
   print_start "Reading firefox standalone container $container_name host...\c"
-  firefox_standalone_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  firefox_standalone_host=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$container_name")
   print_done
 
   print_start "Reading firefox standalone container $container_name port...\c"
@@ -279,7 +279,7 @@ start_chrome_standalone_container () {
   print_done
 
   print_start "Reading chrome standalone container $container_name host...\c"
-  chrome_standalone_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  chrome_standalone_host=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$container_name")
   print_done
 
   print_start "Reading chrome standalone container $container_name port...\c"

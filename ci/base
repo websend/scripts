@@ -116,11 +116,11 @@ start_redis_container () {
   print_done
 
   print_start "Reading redis container $container_name host...\c"
-  redis_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  redis_host=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$container_name")
   print_done
 
   print_start "Reading redis container $container_name port...\c"
-  redis_port=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "6379/tcp") 0).HostPort }}' "$container_name")
+  redis_port=6379
   print_done
 }
 
@@ -150,11 +150,11 @@ start_mysql_container () {
   print_done
 
   print_start "Reading mysql container $container_name host...\c"
-  mysql_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  mysql_host=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$container_name")
   print_done
 
   print_start "Reading mysql container $container_name port...\c"
-  mysql_port=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort }}' "$container_name")
+  mysql_port=3306
   print_done
 }
 
@@ -183,11 +183,11 @@ start_mysql_in_memory_container () {
   print_done
 
   print_start "Reading mysql container $container_name host...\c"
-  mysql_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  mysql_host=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$container_name")
   print_done
 
   print_start "Reading mysql container $container_name port...\c"
-  mysql_port=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort }}' "$container_name")
+  mysql_port=3306
   print_done
 }
 
@@ -210,11 +210,11 @@ start_rabbitmq_container () {
   print_done
 
   print_start "Reading rabbitmq container $container_name host...\c"
-  rabbitmq_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  rabbitmq_host=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$container_name")
   print_done
 
   print_start "Reading rabbitmq container $container_name port...\c"
-  rabbitmq_port=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "5672/tcp") 0).HostPort }}' "$container_name")
+  rabbitmq_port=5672
   print_done
 }
 
@@ -236,11 +236,11 @@ start_memcached_container () {
   print_done
 
   print_start "Reading memcached container $container_name host...\c"
-  memcached_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  memcached_host=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$container_name")
   print_done
 
   print_start "Reading memcached container $container_name port...\c"
-  memcached_port=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "11211/tcp") 0).HostPort }}' "$container_name")
+  memcached_port=11211
   print_done
 }
 
@@ -261,10 +261,35 @@ start_firefox_standalone_container () {
   print_done
 
   print_start "Reading firefox standalone container $container_name host...\c"
-  firefox_standalone_host=$(docker inspect --format '{{ .NetworkSettings.Gateway }}' "$container_name")
+  firefox_standalone_host=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$container_name")
   print_done
 
   print_start "Reading firefox standalone container $container_name port...\c"
-  firefox_standalone_port=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "4444/tcp") 0).HostPort }}' "$container_name")
+  firefox_standalone_port=4444
+  print_done
+}
+
+# $1: container name
+start_chrome_standalone_container () {
+  set -e
+  local container_name="$1"
+
+  print_start "Starting chrome standalone container $1..."
+  docker run \
+  --name "$container_name" \
+  --shm-size=2g \
+  -d \
+  -p :4444 \
+  "$standalone_chrome_image_name":"$standalone_chrome_tag" &
+
+  sleep 2
+  print_done
+
+  print_start "Reading chrome standalone container $container_name host...\c"
+  chrome_standalone_host=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$container_name")
+  print_done
+
+  print_start "Reading chrome standalone container $container_name port...\c"
+  chrome_standalone_port=4444
   print_done
 }
